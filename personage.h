@@ -1,0 +1,102 @@
+#include<string.h>
+#include<iostream>
+#include<stdlib.h>
+#include<math.h>
+
+
+using namespace std;
+
+class personnage
+{
+public:
+	int PV;            // reprÈsente les points de vie du personnage
+	int PVmax;         // reprÈsente les points de vie max du personnage
+	int Force;         // reprÈsente la force du personnage
+	int VIT;           // reprÈsente la vitesse du personnage
+	int nb_potion;     // reprÈsente le nombre de potions du personnage
+	char message[100]; // permet d'afficher un message pour chaque action
+	char nom[100];     // nom du personnage
+	
+
+	personnage();      // par dÈfaut: force=50, PV=PVMax=100, EXP=0, VIT=50,nb_potion=3
+	personnage(int nPV, int nForce, int nEXP, int nVIT, int nb_potion, char * nnom);
+	// ~personnage();  // si nÈcessaire
+	//virtual  char* get_message() const;  // retourne le message
+	//virtual  char* get_name() const;     // retourne le nom
+	virtual int get_EXP() const;
+	virtual int get_Niv() const;
+	int get_PV() const;         // retourne les PV
+	int get_PVmax() const;      // retourne les PVmax
+	int get_VIT() const;         // retourne la vitesse
+	int get_Force() const;     // retourne la Force
+	int get_nb_potion() const;     // retourne le nbr de potion
+
+	//virtual void set_message(char * newmess); // permet de copier un message dans message
+	void donner_coup(personnage &ennemi);  // calcule en comparant la force
+	// d‚Äôennemi des points de d ÃÅeg^ats (par exemple degats = 10*Force/ennemi.Force) qui
+	// seront retir ÃÅes `a PV d‚Äôennemi. On pourra  ÃÅecrire un message sp ÃÅecial dans chaque
+	// personnage ("attaque" pour le personnage et "ouille" pour l‚Äôennemi.)
+	void prendre_coup(int valeur);  // PV = PV-valeur
+	void soin();   // remonte les PV du personnage d‚Äôun certain pourcentage des
+	// PVmax. D ÃÅecr ÃÅemente le nombre de potions.
+	bool fuite(const personnage &ennemi);  // permet de quitter un combat selon
+	// une certaine probabilit ÃÅe en comparant la VIT de l‚Äôennemi. Chance de Reussite =
+	// VIT/ennemi.VIT*50%. On ne peut pas avoir plus de 90% de chances de fuir.
+	virtual void win(personnage &ennemi); // Lors de la victoire du personnage, cette fonction permet de voler les potions de l'ennemi. La force et la vitesse augmentent
+	// d'un certain pourcentage : par exemple, Force=Force+(ennemi.Force/Force)*Force/100;
+	// VIT=VIT+ (ennemi.VIT/VIT)*VIT/100 (la force augmente de 3% si l'ennemi  Ètait 3 fois plus fort)
+	virtual void affiche(int a) const ;  //affiche l'avatar du personnage, de la mÍme faÁon que les dÈcors.
+	virtual void affiche_ennemi(int a) const; // affichage en mode ennemi
+	virtual void affiche_Mort(int a) const;
+	virtual void affiche_ennemi_attaque(int a) const;
+	virtual void affiche_ennemi_attaque2(int a) const;
+};
+
+
+// ___________________
+//(                   )_
+//(__                   )
+//   (__________________)
+
+
+class guerrier :public personnage
+{
+	public:
+	int EXP;
+	int Niv;
+	guerrier();      // par dÈfaut: force=50, PV=PVMax=100, EXP=0, VIT=50,nb_potion=3
+	//guerrier(int nPV, int nForce, int nEXP, int nVIT, int nb_potion, char * nnom);
+	
+	int get_EXP() const;
+	int get_Niv() const;
+	
+	/*void affiche(int a);  		//affiche l'avatar du personnage, de la m^eme fa Ãßcon que les d ÃÅecors.
+	void affiche_ennemi(int a); // affichage en mode ennemi
+	void affiche_Mort(int a);*/
+	void win(personnage &ennemi, int N);
+};
+
+
+class Serpent :public personnage
+{
+	public:
+	Serpent();      // par dÈfaut: force=50, PV=PVMax=100, EXP=0, VIT=50,nb_potion=3
+	Serpent(int nPV, int nForce, int nEXP, int nVIT, int nb_potion, char * nnom);
+	
+	  void affiche_ennemi(int a) const;  		//affiche l'avatar du personnage, de la m^eme fa Ãßcon que les d ÃÅecors.
+	/*void affiche_ennemi(int a); // affichage en mode ennemi
+	void affiche_Mort(int a);*/
+};
+
+
+class Robot :public personnage
+{
+	public:
+	Robot();      // par dÈfaut: force=50, PV=PVMax=100, EXP=0, VIT=50,nb_potion=3
+	Robot(int nPV, int nForce, int nEXP, int nVIT, int nb_potion, char * nnom);
+	
+	void affiche_ennemi(int a) const;  		//affiche l'avatar du personnage, de la m^eme fa Ãßcon que les d ÃÅecors.
+	void affiche_ennemi_attaque(int a) const; // affichage du personnage qui attaque
+	void affiche_ennemi_attaque2(int a) const;
+};
+
