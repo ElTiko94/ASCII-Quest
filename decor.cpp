@@ -79,3 +79,28 @@ void Batiment :: affiche(int a) const
 	else if(a==7)
 	{cout<<"_|==|___| |___|==|_";}
 }
+
+int Batiment :: get_largeur() const
+{
+    return(largeur);
+}
+
+int Moulin :: get_largeur() const
+{
+    return(largeur);
+}
+
+int Maison :: get_largeur() const
+{
+    return(largeur);
+}
+
+int Arbre :: get_largeur() const
+{
+    return(largeur);
+}
+
+int Escargot :: get_largeur() const
+{
+    return(largeur);
+}
