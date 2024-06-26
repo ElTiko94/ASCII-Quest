@@ -19,11 +19,6 @@ void Maison :: affiche(int a) const
 }
 
 
-Maison :: Maison() 
-{
-	largeur = 5;
-}
-
 	
 void Arbre :: affiche(int a) const
 {
@@ -37,10 +32,6 @@ void Arbre :: affiche(int a) const
 	{cout<<"_/\\_";}
 }
 
-Arbre :: Arbre() 
-{
-	largeur = 4;
-}
 
 
 
@@ -51,11 +42,6 @@ void Escargot :: affiche(int a) const
 	{cout<<"    ";}
 	else if(a==7)
 	{cout<<"_Y@_";}
-}
-
-Escargot :: Escargot() 
-{
-	largeur = 4;
 }
 
 
@@ -77,10 +63,6 @@ void Moulin :: affiche(int a) const
 	{cout<<"_#####_";}
 }
 
-Moulin :: Moulin() 
-{
-	largeur = 7;
-}
 
 void Batiment :: affiche(int a) const
 {
@@ -96,34 +78,4 @@ void Batiment :: affiche(int a) const
 	{cout<<" |==|   ___   |==| ";}
 	else if(a==7)
 	{cout<<"_|==|___| |___|==|_";}
-}
-
-Batiment :: Batiment() 
-{
-	largeur = 19;
-}
-
-int Batiment :: get_largeur() const
-{
-    return(largeur);
-}
-
-int Moulin :: get_largeur() const
-{
-    return(largeur);
-}
-
-int Maison :: get_largeur() const
-{
-    return(largeur);
-}
-
-int Arbre :: get_largeur() const
-{
-    return(largeur);
-}
-
-int Escargot :: get_largeur() const
-{
-    return(largeur);
 }

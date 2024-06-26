@@ -1,41 +1,39 @@
+#include<iostream>
+#include<stdlib.h>
 #include<conio.h>
 #include"decor.h"
 #include"personage.h"
 #include<Windows.h>
 
-int random(int );// genere un nombre aleatoire de 0 à l'entié entrée comme argument de la fonction
-void affichage_decor(int n,int deb);// affiche le decor du deb au deb+n
-void affichage_entete(personnage &ennemi,personnage &perso);// affiche les caracteristique du personnage et de l'ennemie
-void affichage_des_perso (personnage &ennemi,personnage &perso,int mode);// affichage des personnage selon le mode, 0 : "mode combat", 1:"ennemi attaque", 2:"personage attaque"
-void affichage_combat(personnage &ennemi,personnage &perso);// affichage des perso en mode 0
-void affichage_ennemie_attaque(personnage &ennemi,personnage &perso);// affichage des perso en mode 1
-void affichage_perso_attaque(personnage &ennemi,personnage &perso);// affcihe des perso en mode 2
-void affichage_promo(personnage &perso, int n, int deb); // affichage en mode promenade (decor + perso)
-void affichage_commande();	// affichage des commande sur les quelles l'utilisateur peut appuyer
-void affich_fight();		// affichage du mot : Fight avant que le combat commance
-void affich_win();			// affichage de : You Win.
-void affich_tete_de_mort();// affichage d'une tete de mort
-void  affichage_entete_promo(personnage &perso);//affichage des caracterestique de perso principale
+using namespace std;
+int random(int );
+void affichage_decor(int n,int deb);
+void affichage_entete(personnage &ennemi,personnage &perso);
+void affichage_des_perso (personnage &ennemi,personnage &perso,int mode);
+void affichage_combat(personnage &ennemi,personnage &perso);
+void affichage_ennemie_attaque(personnage &ennemi,personnage &perso);
+void affichage_perso_attaque(personnage &ennemi,personnage &perso);
 
-const int M =290;		// le nombre de decor dans tout le jeux
-ElementDecor *pt[M];	// declaration du tableau de pointeur qui correspond au decor
+
+const int M =190;
+ElementDecor *pt[M];
 
 int main()
 {
 	system("mode con: cols=128 lines=128");
 	int i,type,j,debut;
-	int N=10;			// le nombre de decor à afficher sur la console a chaque fois
+	int N=10;
+	bool role=1;
 
-	guerrier mimu;			// declaration du perso principale
-	personnage* monstre;	// declaration de l'ennemie
+	personnage mimu;
+	personnage monstre;
 	char c;
 
+
 	debut =0;
-	
-	// intialisation aleatoire du tableau de pointeur qui correspond au decor 
 	for(i=0;i<M;i++)
 	{
-		type = random(5);		// random(5) permet d'avoir un entier aleatoire entre 0 et 4
+		type = random(5);
 		if(type==0)
 		{
 			pt[i] = new Arbre;
@@ -58,186 +56,78 @@ int main()
 			pt[i] = new Batiment;
 		}
 	}
-
-	int perdu =0;							// variable qui correspond au "game over"
-
-	while(perdu  == 0)
+	while(1)
 	{
-		system("cls");						// supprimé l'ecran à chaque nouvelle affichage
+		system("cls");
+		affichage_entete(monstre, mimu);
 
-
-		affichage_promo(mimu, N, debut);	// affichage du decor et du personnge principale
-
-		bool avance = 0;					// variable qui permet de savoir que l'utilisateur à appuyer sur "d" ou "q" et pas autre touche
-		do
-		{									
-			c = _getch();					// attendre l'action de l'utilisateur pour avaancer ou reculer
-			
-			if (c == 'd' && debut + N<M)	// avancer si 'd' appuyer et si le bout du tableau de ponteur n'est pas atteind
-			{
-				debut++;
-				avance = 1;
-			}
-			else if (c == 'q' && debut>0)	// reculer si 'q' appuyer et si le debut>0
-			{
-				debut--;
-				avance = 1;
-			}
-		}while(avance == 0);
+		affichage_decor(N, debut);
 		
-		if (random(14) == 1)				// chance de 1/14 de tomber sur un monstre
+		cout<<endl;
+		
+		// affichage des personnage 
+		affichage_combat(monstre, mimu);
+		
+		c = getch();
+		if ( c =='d' && debut+N<M)
 		{
-			int win = 0;					// variable qui permet de savoir si le perssonnage à gagner
-			char nom[100];
-			
-			//declaration de trois monstres en fonction de l'vancement dans le jeux
-			Serpent enm1(30+debut,10+debut/4,0,15+debut/2 , 0, nom);
-			personnage enm2(50+debut,25+debut/3,0,25+debut/3 , 2, nom);
-			Robot enm3(55+debut,22+debut/3,0,25+debut/4 , 0, nom);
-			
-
-			// choix du monstre aleatoirement
-			int A = random(6);
-			switch(A)
-			{
-				case 0 :
-					monstre = &enm1;
-					
-					break;
-				case 1 :
-					monstre = &enm2;
-					break;
-				case 2:
-					monstre = &enm1;
-					break;
-				case 3:
-					monstre = &enm2;
-					
-					break;
-				case 4:
-					monstre = &enm1;
-					
-					break;
-				case 5:
-					monstre = &enm3;
-					
-					break;
-			}
-			affich_fight();
-			bool fuite = 0;
-			while (win == 0 && perdu == 0 && fuite == 0)	// le combat continu tant que l'utilisateur n'a ni gagné ni perdu et n'a pas fuit
-			{
-				system("cls");								// suppretion de la console pour le nouveau affichage
-				affichage_entete(*monstre, mimu);			// affichage des caracteristique des deux perso
-
-				affichage_decor(N, debut);
-
-				cout << endl;
-
-				// affichage des personnage 
-				affichage_combat(*monstre, mimu);
-				c = 'g';
-				bool soin = 0;
-				
-				do
-				{
-					c = _getch();
-					if (c == 't')
-					{
-						mimu.donner_coup(*monstre);
-	
-	
-						system("cls");
-						affichage_entete(*monstre, mimu);
-	
-						affichage_decor(N, debut);
-	
-						cout << endl;
-	
-						affichage_perso_attaque(*monstre, mimu);
-						Sleep(400);
-	
-					}
-	
-					else if ( c == 's' && mimu.get_nb_potion() > 0 )
-					{
-						mimu.soin();
-						soin = 1;
-					}
-					else if ( c == 'f')
-					{
-						if(mimu.fuite(*monstre) == 1)
-						{
-							fuite = 1;
-						}
-					}
-				}while(soin == 0  && c!='t' && c!= 'f');
-				
-				if (monstre->get_PV() <= 0 )
-				{
-					mimu.win(*monstre, debut);
-					win = 1;
-					affich_win();
-				}
-				else if(fuite == 1)
-				{
-					
-				}
-				else
-				{
-					system("cls");
-					affichage_entete(*monstre, mimu);
-
-					affichage_decor(N, debut);
-
-					cout << endl;
-
-					// affichage des personnage 
-					affichage_combat(*monstre, mimu);
-					Sleep(100);
-								
-				monstre->donner_coup(mimu);
-
-				system("cls");
-				affichage_entete(*monstre, mimu);
-
-				affichage_decor(N, debut);
-
-				cout << endl;
-
-				// affichage des personnage 
-				affichage_ennemie_attaque(*monstre, mimu);
-				Sleep(100);
-				affichage_ennemie_attaque2(*monstre, mimu);
-				}
-
-				if (mimu.get_PV() <= 0)
-				{
-					perdu = 1;
-					
-					system("cls");
-					affichage_entete(*monstre, mimu);
-				
-					affichage_decor(N, debut);
-				
-				
-					// affichage des personnage
-					for(int a=0;a<10;a++)
-					{
-						mimu.affiche_Mort(a);
-						cout<<endl;
-					}
-					Sleep(400);
-					affich_tete_de_mort();
-					
-				}
-
-			} 
-
+			debut++;
+		}
+		else if( c=='q' && debut>0)
+		{
+			debut--;
 		}
 		
+		if ( c =='t')
+		{
+			if(role == 1)
+			{
+				mimu.donner_coup(monstre);
+				role = 0;
+
+				system("cls");
+				affichage_entete(monstre, mimu);
+
+				affichage_decor(N, debut);
+		
+				cout<<endl;
+		
+				affichage_perso_attaque(monstre, mimu);
+				Sleep(400) ;
+			}
+			else
+			{
+				monstre.donner_coup(mimu);
+				role = 1;
+				
+				system("cls");
+				affichage_entete(monstre, mimu);
+
+				affichage_decor(N, debut);
+		
+				cout<<endl;
+		
+				// affichage des personnage 
+				affichage_ennemie_attaque(monstre, mimu);
+				Sleep(400) ;
+		
+			}
+		}
+		else if( c=='s' )
+		{
+			if(role == 1)
+			{
+				mimu.soin();
+				role = 0;
+			}
+			else
+			{
+				monstre.soin();
+				role = 1;
+			}
+		}
 	}
-	
+
 	for (i=0;i<M;i++)
 	{
 		delete pt[i];
@@ -261,10 +151,8 @@ void affichage_decor(int n,int deb)
 	
 	for(j=0;j<7;j++)
 	{
-		int largeur = 0;
-		for (i=deb;(largeur<109 && i<M);i++)	
+		for (i=deb;i<deb+n;i++)	
 		{
-			largeur = largeur+pt[i]->get_largeur();	
 			pt[i]->affiche(j+1);
 		}
 		cout<<endl;
@@ -272,52 +160,10 @@ void affichage_decor(int n,int deb)
 
 }
 
-void affichage_entete_promo(personnage &perso)
-{
-	int i;
-	
-		cout<<"Niveau \t";
-		cout<<perso.get_Niv();
-		cout<<endl;
-		
-		cout<<"PV \t";
-		cout<<perso.get_PV();
-		cout<<"/";
-		cout<<perso.get_PVmax();
-		cout<<endl;
-
-		cout<<"Force \t";
-		cout<<perso.get_Force();
-		cout<<endl;
-
-		cout<<"Vitesse\t";
-		cout<<perso.get_VIT();
-		cout<<endl;
-
-		cout<<"Potion \t";
-		cout<<perso.get_nb_potion();
-		cout<<endl;
-		
-
-		cout<<"EXP \t";
-		cout<<perso.get_EXP();
-		cout<<"/";
-		cout<<perso.get_Niv()*perso.get_Niv()*9+1;
-		cout<<endl;
-		
-		cout<<"===========================================================================================================";
-		cout<<endl;
-
-}
 
 void affichage_entete(personnage &ennemi,personnage &perso)
 {
 	int i;
-	
-		cout<<"Niveau \t";
-		cout<<perso.get_Niv();
-		cout<<endl;
-		
 		cout<<"PV \t";
 		cout<<perso.get_PV();
 		cout<<"/";
@@ -329,7 +175,7 @@ void affichage_entete(personnage &ennemi,personnage &perso)
 		cout<<"PV \t";
 		cout<<ennemi.get_PV();
 		cout<<"/";
-		cout<<ennemi.get_PVmax();
+		cout<<perso.get_PVmax();
 		cout<<endl;
 
 		cout<<"Force \t";
@@ -342,13 +188,13 @@ void affichage_entete(personnage &ennemi,personnage &perso)
 		cout<<ennemi.get_Force();
 		cout<<endl;
 
-		cout<<"Vitesse\t";
+		cout<<"Vita \t";
 		cout<<perso.get_VIT();
 		for(i=0;i<10;i++)
 		{
 			cout<<"\t";		
 		}
-		cout<<"Vitesse\t";
+		cout<<"Vita \t";
 		cout<<ennemi.get_VIT();
 		cout<<endl;
 
@@ -361,13 +207,6 @@ void affichage_entete(personnage &ennemi,personnage &perso)
 		cout<<"Potion \t";
 		cout<<ennemi.get_nb_potion();
 		cout<<endl;
-		
-		cout<<"EXP \t";
-		cout<<perso.get_EXP();
-		cout<<"/";
-		cout<<perso.get_Niv()*perso.get_Niv()*9+1;
-		cout<<endl;
-		
 		cout<<"===========================================================================================================";
 		cout<<endl;
 
@@ -382,32 +221,10 @@ void affichage_ennemie_attaque(personnage &ennemi,personnage &perso)
 {
 	affichage_des_perso (ennemi,perso,1);
 }
-void affichage_ennemie_attaque2(*monstre, mimu)
-{
-
-}
 
 void affichage_perso_attaque(personnage &ennemi,personnage &perso)
 {
 	affichage_des_perso (ennemi,perso,2);
-}
-// affichage en mode promenade
-void affichage_promo(personnage &perso, int n, int deb)
-{
-	affichage_entete_promo(perso);
-
-	int j;
-
-	affichage_decor(n,deb);
-	cout << endl;
-
-	for (j = 0; j<9; j++)
-	{
-		perso.affiche(j + 1);
-		cout << endl;
-	}
-	
-	affichage_commande();
 }
 
 void affichage_des_perso (personnage &ennemi,personnage &perso,int mode)
@@ -417,13 +234,8 @@ void affichage_des_perso (personnage &ennemi,personnage &perso,int mode)
 	// mode attack ennemi
 	if(mode == 1)
 	{
-		for(j=0;j<9;j++)
-		{
-			perso.affiche(j+1);
-			
-			ennemi.affiche_ennemi_attaque(j + 1);
-			cout<<endl;
-		}
+		m1 = 0;
+		m2 = 5;
 	}
 
 	//mode combat
@@ -431,21 +243,6 @@ void affichage_des_perso (personnage &ennemi,personnage &perso,int mode)
 	{
 		m1 = 0;
 		m2 = 10;
-
-		for(j=0;j<9;j++)
-		{
-			for(i=0;i<m1;i++)
-			{
-				cout<<"\t";		
-			}
-			perso.affiche(j+1);
-			for(i=0;i<m2;i++)
-			{
-				cout<<"\t";		
-			}
-			ennemi.affiche_ennemi(j + 1);
-			cout<<endl;
-		}
 	}
 
 	// mode attack perso
@@ -453,124 +250,20 @@ void affichage_des_perso (personnage &ennemi,personnage &perso,int mode)
 	{
 		m1 = 5;
 		m2 = 5;
-		for(j=0;j<9;j++)
-		{
-			for(i=0;i<m1;i++)
-			{
-				cout<<"\t";		
-			}
-			perso.affiche(j+1);
-			for(i=0;i<m2;i++)
-			{
-				cout<<"\t";		
-			}
-			ennemi.affiche_ennemi(j + 1);
-			cout<<endl;
-		}
-
 	}
-}
 
-void affichage_commande()
-{
-		cout<<endl;
-		cout<<"<-q";
-		for(int i=0;i<12;i++)
+	for(j=0;j<9;j++)
+	{
+		for(i=0;i<m1;i++)
 		{
 			cout<<"\t";		
 		}
-		cout<<"d->";
+		perso.affiche(j+1);
+		for(i=0;i<m2;i++)
+		{
+			cout<<"\t";		
+		}
+		ennemi.affiche(j+1);
 		cout<<endl;
-}
-
-void affich_fight()
-{
-	for(int i = 0;i<5;i++)
-	{
-		system("cls");
-		cout<<endl;
-		cout<<endl;
-		cout<<endl;
-		cout<<endl;
-		cout<<endl;
-		cout<<"\t\t\t\t _____   _   _____   _   _   _____ "<<endl;
-		cout<<"\t\t\t\t|  ___| | | /  ___| | | | | |_   _|"<<endl;
-		cout<<"\t\t\t\t| |__   | | | |     | |_| |   | |  "<<endl;
-		cout<<"\t\t\t\t|  __|  | | | |  _  |  _  |   | |  "<<endl;
-		cout<<"\t\t\t\t| |     | | | |_| | | | | |   | |  "<<endl;
-		cout<<"\t\t\t\t|_|     |_| \\_____/ |_| |_|   |_|  "<<endl;
-		Sleep(100);
-		system("cls");
-		Sleep(100);
 	}
 }
-
-void affich_win()
-{
-	system("cls");
-	cout<<endl;
-	cout<<endl;
-	cout<<endl;
-	cout<<endl;
-	cout<<endl;
-	cout<<"\t\t\t\t__    __  _____   _   _        _          __  _   __   _  "<<endl;
-	cout<<"\t\t\t\t\\ \\  / / /  _  \\ | | | |      | |        / / | | |  \\ | | "<<endl;
-	cout<<"\t\t\t\t \\ \\/ /  | | | | | | | |      | |  __   / /  | | |   \\| | "<<endl;
-	cout<<"\t\t\t\t  \\  /   | | | | | | | |      | | /  | / /   | | | |\\   | "<<endl;
-	cout<<"\t\t\t\t  / /    | |_| | | |_| |      | |/   |/ /    | | | | \\  | "<<endl;
-	cout<<"\t\t\t\t /_/     \\_____/ \\_____/      |___/|___/     |_| |_|  \_| "<<endl;
-	Sleep(400);
-}
-
-void affich_tete_de_mort()
-{
-	system("cls");
-	cout<<endl;
-	cout<<endl;
-	cout<<endl;
-	cout<<"\t\t\t\t            ZZZZZZZZZZZZZZZZZZZZZ"<<endl;
-	cout<<"\t\t\t\t          ZZZZZ              ZZZZZZ"<<endl;
-	cout<<"\t\t\t\t        ZZZZZ                    ZZZZ"<<endl;
-	cout<<"\t\t\t\t      ZZZZZ                       ZZZZZ"<<endl;
-	cout<<"\t\t\t\t    ZZZZZ                           ZZZZ"<<endl;
-	cout<<"\t\t\t\t   ZZZZ                              ZZZZ"<<endl;
-	cout<<"\t\t\t\t  ZZZ                                  ZZZ"<<endl;
-	cout<<"\t\t\t\t ZZZ                                    ZZZ"<<endl;
-	cout<<"\t\t\t\tZZZZ                                    ZZZ"<<endl;
-	cout<<"\t\t\t\tZZZ                                     ZZZ"<<endl;
-	cout<<"\t\t\t\tZZZ                                     ZZZ"<<endl;
-	cout<<"\t\t\t\tZZZ                                     ZZZ"<<endl;
-	cout<<"\t\t\t\tZZZ                             ZZ      ZZZ"<<endl;
-	cout<<"\t\t\t\tZZZ                           ZZZZZ     ZZZ"<<endl;
-	cout<<"\t\t\t\tZZZ                        ZZZZZZZZZ  ZZZZZ"<<endl;
-	cout<<"\t\t\t\tZZZZ    ZZZ              ZZZZZZZZZZZZ ZZZZ"<<endl;
-	cout<<"\t\t\t\tZZZZ   ZZZZZZ           ZZZZZZZZZZZZZ ZZZ"<<endl;
-	cout<<"\t\t\t\tZZZZ  ZZZZZZZZZZ       ZZZZZZZZZZZZZ  ZZ"<<endl;
-	cout<<"\t\t\t\tZZZZ  ZZZZZZZZZZZ      ZZZZZZZZZZZZ   ZZ"<<endl;
-	cout<<"\t\t\t\t ZZZ   ZZZZZZZZZZZ      ZZZZZZZZZZ    ZZ"<<endl;
-	cout<<"\t\t\t\t ZZZ    ZZZZZZZZZ ZZZZZ   ZZZZZZ    ZZZZ"<<endl;
-	cout<<"\t\t\t\t  ZZZ    ZZZZZZZ  ZZZZZZ           ZZZZ"<<endl;
-	cout<<"\t\t\t\t   ZZZZZ          Z  ZZZ     ZZZZZZZZZ"<<endl;
-	cout<<"\t\t\t\t    ZZZZZZZZ          ZZ    ZZZZZZZZ"<<endl;
-	cout<<"\t\t\t\t     ZZZZZZZZ             ZZZZZ"<<endl;
-	cout<<"\t\t\t\t          ZZZ  Z   Z   Z  ZZZ"<<endl;
-	cout<<"\t\t\t\t          ZZZ ZZZ ZZZ ZZZ ZZZ"<<endl;
-	cout<<"\t\t\t\t          ZZZ ZZZ ZZZ ZZZ ZZZ"<<endl;
-	cout<<"\t\t\t\t          ZZZ ZZZ ZZZ ZZZ ZZZ"<<endl;
-	cout<<"\t\t\t\t           ZZZZZZZZZZZZZZZZZ"<<endl;
-	cout<<"\t\t\t\t              ZZZZZZZZZZZ"<<endl;
-	Sleep(1000);
-}
-
-/*
-void Pause()
-{
-	system("cls");
-	cout<<endl;
-	cout<<endl;
-	cout<<endl;
-	cout<<endl;
-	cout<<endl;
-	cout<<"\t\t\t\tPAUSE";
-
-}*/
