@@ -1,5 +1,5 @@
 #include<string.h>
-#include"personage.h"
+#include"perso.h"
 #include<iostream>
 
 
@@ -100,25 +100,26 @@ personnage::personnage()
 	// d’un certain pourcentage : par exemple, Force=Force+(ennemi.Force/Force)*Force/100;
 	// VIT=VIT+ (ennemi.VIT/VIT)*VIT/100 (la force augmente de 3% si l’ennemi  ́etait
 	// 3 fois plus fort)
-void personnage:: affiche(int a)  //affiche l’avatar du personnage, de la m^eme fa ̧con que les d ́ecors.
+void affiche(int a)  //affiche l’avatar du personnage, de la m^eme fa ̧con que les d ́ecors.
 {
 	if(a==1)
-	{cout<<"           .   ";}
+	{cout<<"           .";}
 	else if(a==2)
-	{cout<<"          / \\  ";}
+	{cout<<"          / \\";}
 	else if(a==3)
-	{cout<<"          |.|  ";}
+	{cout<<"          |.|";}
+	else if(a==3)
+	{cout<<"     _    |:|";}
 	else if(a==4)
-	{cout<<"     _    |:|  ";}
-	else if(a==5)
 	{cout<<"   _(_)_`--8--'";}
+	else if(a==5)
+	{cout<<"  /\\   /\\  8";}
 	else if(a==6)
-	{cout<<"  /\\   /\\  8   ";}
+	{cout<<" 0  \\_/  \\ O";}
 	else if(a==7)
-	{cout<<" 0  \\_/  \\ O   ";}
+	{cout<<"    / \\";}
 	else if(a==8)
-	{cout<<"    / \\        ";}
-	else if(a==9)
-	{cout<<"  _/   \\_      ";}
+	{cout<<"  _/   \\_";}
+	
 }
 

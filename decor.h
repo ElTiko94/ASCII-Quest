@@ -10,7 +10,7 @@ class ElementDecor
 class  Maison : public ElementDecor
 {
 	public:
-	
+
 	
 	void affiche(int a) const;
 };
